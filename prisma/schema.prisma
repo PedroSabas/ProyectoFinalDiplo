@@ -1,0 +1,39 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Category {
+  categoryId  String   @id @default(auto()) @map("_id") @db.ObjectId
+  categoria   String   @default("NO CATEGORY")
+  descripcion String   @default("NO DESCRIPTION")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+  products    Product[]
+}
+
+
+model Product {
+  productId   String   @id @default(auto()) @map("_id") @db.ObjectId
+  producto    String  
+  precio      String   
+  descripcion String   @default("NO DESCRIPTION")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+  categoryId  String   @db.ObjectId
+  category    Category @relation(fields: [categoryId], references: [categoryId])
+  stock       Stock    @relation(fields: [stockId], references: [stockId])
+  stockId     String   @db.ObjectId
+}
+
+model Stock {
+  stockId     String   @id @default(auto()) @map("_id") @db.ObjectId
+  encoded     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+  products    Product[]
+}
